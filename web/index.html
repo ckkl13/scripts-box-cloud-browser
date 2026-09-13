@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Scripts Box 云端浏览器</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="shell">
+  <header><div><h1>Scripts Box</h1><p>GitHub 云端文件浏览器</p></div><button id="theme" class="icon">☾</button></header>
+  <section class="toolbar"><button id="token">访问令牌</button><button id="refresh">刷新</button><input id="search" placeholder="搜索文件名或路径…"><button id="download">下载选中</button><button id="folder">下载当前文件夹</button></section>
+  <nav id="crumbs"></nav>
+  <section class="content"><div class="list"><div class="list-head"><span>选择</span><span>名称</span><span>类型</span><span>大小</span></div><div id="entries"></div></div><aside id="preview"><div class="empty">选择文件以预览</div></aside></section>
+  <footer><span id="status">正在读取云端清单…</span><span id="selected">已选 0 项</span></footer>
+</main>
+<dialog id="tokenDialog"><form method="dialog"><h3>私有仓库访问</h3><p>令牌只保存在当前页面内，刷新后清除。</p><input id="tokenInput" type="password" placeholder="Fine-grained token"><menu><button value="cancel">取消</button><button id="saveToken" value="default">使用令牌</button></menu></form></dialog>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script type="module" src="app.js"></script>
+</body></html>
