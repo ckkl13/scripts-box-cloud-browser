@@ -58,12 +58,11 @@ function buildTree() {
   const root = { name: ROOT_NAME, path: '', children: {}, files: [] };
   for (const f of files) {
     const parts = f.path.split('/');
-    // strip the root "scripts box" segment
     let node = root;
-    for (let i = 1; i < parts.length - 1; i++) {
+    for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
       if (!node.children[part]) {
-        node.children[part] = { name: part, path: parts.slice(1, i + 1).join('/'), children: {}, files: [] };
+        node.children[part] = { name: part, path: parts.slice(0, i + 1).join('/'), children: {}, files: [] };
       }
       node = node.children[part];
     }
