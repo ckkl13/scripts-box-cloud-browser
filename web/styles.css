@@ -579,8 +579,55 @@ dialog menu { display: flex; gap: 8px; justify-content: flex-end; padding: 0; ma
   .list-header span:nth-child(5), .list-header span:nth-child(6),
   .file-row .meta:nth-of-type(2), .file-row .meta:nth-of-type(3) { display: none; }
 }
-@media (max-width: 560px) {
-  .sidebar { position: absolute; left: 0; top: 92px; bottom: 40px; z-index: 20; box-shadow: var(--shadow); }
+@media (max-width: 640px) {
+  /* Header: compact */
+  .app-header { padding: 0 8px; }
+  .brand-text { display: none; }
+  .header-actions { gap: 4px; }
+  .header-actions .btn { padding: 6px 8px; font-size: 11px; }
+
+  /* Toolbar: wrap to second row, smaller buttons */
+  .toolbar { flex-wrap: wrap; height: auto; padding: 4px 8px; gap: 4px; }
+  .nav-buttons { flex-shrink: 0; }
+  .breadcrumbs { font-size: 12px; order: 3; width: 100%; }
+  .toolbar-right { gap: 4px; }
+  .search-box input { width: 100px; padding-left: 24px; font-size: 11px; }
+
+  /* Sidebar & preview: overlay */
+  .sidebar { position: absolute; left: 0; top: 84px; bottom: 36px; z-index: 20; box-shadow: var(--shadow); }
   .sidebar.collapsed { box-shadow: none; }
-  .search-box input { width: 110px; }
+  .preview-panel { top: 84px; bottom: 36px; }
+
+  /* File area less padding */
+  .file-area { padding: 6px 8px 8px; }
+
+  /* Grid: smaller cards */
+  .file-list.grid-view { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+  .file-card { padding: 10px 6px 8px; gap: 5px; }
+  .file-card .card-icon { width: 40px; height: 40px; font-size: 28px; }
+  .file-card .card-name { font-size: 11px; }
+  .file-card .card-size { font-size: 10px; }
+  .file-card .card-checkbox { top: 6px; left: 6px; }
+
+  /* List: compact rows */
+  .file-row { padding: 5px 6px; gap: 6px; }
+  .file-row .name { font-size: 12px; }
+
+  /* Footer: stack buttons, compact */
+  .app-footer { height: auto; flex-direction: column; gap: 4px; padding: 4px 8px; }
+  .footer-left { width: 100%; font-size: 11px; }
+  .footer-right { width: 100%; justify-content: stretch; }
+  .footer-right .btn { flex: 1; font-size: 11px; padding: 5px 8px; }
+  .progress-wrap { width: 100%; }
+
+  /* Dialog: full width */
+  dialog { width: calc(100vw - 24px); max-width: 360px; }
+  dialog form { min-width: 0; padding: 16px; }
+}
+@media (max-width: 400px) {
+  /* Very small: hide search, rely on icon-only nav */
+  .search-box input { width: 70px; }
+  .file-list.grid-view { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
+  .file-card .card-icon { width: 34px; height: 34px; font-size: 22px; }
+  .file-card .card-name { font-size: 10px; }
 }
