@@ -456,12 +456,19 @@ function renderFileList() {
 }
 
 /* ===================== Preview ===================== */
+function syncResizer() {
+  const pv = $('preview');
+  const rz = $('previewResizer');
+  if (rz) rz.style.display = pv.classList.contains('collapsed') ? 'none' : '';
+}
+
 async function preview(f) {
   if (!f) return;
   currentPreviewFile = f;
   // ensure preview panel is visible
   $('preview').classList.remove('collapsed');
   $('togglePreview').classList.add('active');
+  syncResizer();
 
   const body = $('previewBody');
   const dlBtn = $('downloadOne');
@@ -634,11 +641,45 @@ $('togglePreview').onclick = () => {
   const pv = $('preview');
   pv.classList.toggle('collapsed');
   $('togglePreview').classList.toggle('active', !pv.classList.contains('collapsed'));
+  syncResizer();
 };
 $('closePreview').onclick = () => {
   $('preview').classList.add('collapsed');
   $('togglePreview').classList.remove('active');
+  syncResizer();
 };
+
+/* ===================== Resizer drag ===================== */
+(function initResizer() {
+  const rz = $('previewResizer');
+  const pv = $('preview');
+  if (!rz || !pv) return;
+  let dragging = false;
+  const MIN = 200, MAX = 700;
+
+  rz.addEventListener('mousedown', e => {
+    dragging = true;
+    rz.classList.add('active');
+    document.body.classList.add('resizing');
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const rect = pv.getBoundingClientRect();
+    let w = rect.right - e.clientX;
+    w = Math.max(MIN, Math.min(MAX, w));
+    pv.style.width = w + 'px';
+    pv.style.minWidth = w + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    rz.classList.remove('active');
+    document.body.classList.remove('resizing');
+  });
+})();
 
 $('downloadSelected').onclick = downloadSelected;
 $('downloadFolder').onclick = downloadCurrentFolder;
