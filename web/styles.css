@@ -238,6 +238,15 @@ body {
   white-space: nowrap;
   font-size: 12.5px;
 }
+.tree-node .node-size {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  padding-right: 8px;
+  opacity: 0.8;
+}
+.tree-node.active .node-size { color: var(--accent); }
 .tree-children { margin-left: 0; }
 
 /* ===== File area ===== */

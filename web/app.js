@@ -1,4 +1,4 @@
-import { setToken, readManifest, fetchFile } from './github.js?v=20260914';
+import { setToken, readManifest, fetchFile } from './github.js';
 
 const $ = id => document.getElementById(id);
 
@@ -69,6 +69,15 @@ function buildTree() {
     if (parts.length > 1) node.files.push(f);
     else root.files.push(f);
   }
+  // post-order: compute total size (sum of all files recursively) for each folder
+  function computeSize(node) {
+    let total = 0;
+    for (const f of node.files) total += f.size || 0;
+    for (const child of Object.values(node.children)) total += computeSize(child);
+    node.totalSize = total;
+    return total;
+  }
+  computeSize(root);
   return root;
 }
 
@@ -203,9 +212,14 @@ function renderTreeNode(node, depth) {
   name.className = 'node-name';
   name.textContent = node.name;
 
+  const sz = document.createElement('span');
+  sz.className = 'node-size';
+  sz.textContent = size(node.totalSize || 0);
+
   el.appendChild(twisty);
   el.appendChild(icon);
   el.appendChild(name);
+  el.appendChild(sz);
   el.style.paddingLeft = (6 + depth * 14) + 'px';
   el.onclick = () => navigate(node.path);
 
@@ -334,7 +348,7 @@ function renderFileList() {
 
       const sizeEl = document.createElement('span');
       sizeEl.className = 'meta';
-      sizeEl.textContent = item.isFolder ? '—' : size(item.size);
+      sizeEl.textContent = item.isFolder ? size(item.totalSize || 0) : size(item.size);
 
       const typeEl = document.createElement('span');
       typeEl.className = 'meta';
@@ -435,7 +449,7 @@ function renderFileList() {
       card.innerHTML = `
         <div class="card-icon">${item.isFolder ? '📁' : fileIcon(item.path)}</div>
         <div class="card-name">${esc(displayName)}</div>
-        <div class="card-size">${item.isFolder ? '文件夹' : size(item.size)}</div>
+        <div class="card-size">${item.isFolder ? size(item.totalSize || 0) : size(item.size)}</div>
       `;
       card.insertBefore(cb, card.firstChild);
 
