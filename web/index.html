@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Scripts Box 资源浏览器</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">☁</div>
+      <div class="brand-text">
+        <h1>Scripts Box</h1>
+        <span>资源浏览器</span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="tokenBtn" class="btn">令牌</button>
+      <button id="refreshBtn" class="btn" title="刷新">↻ 刷新</button>
+      <button id="themeBtn" class="btn btn-icon" title="切换主题">☀</button>
+    </div>
+  </header>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="nav-buttons">
+      <button id="backBtn" class="btn btn-icon" title="后退">←</button>
+      <button id="forwardBtn" class="btn btn-icon" title="前进">→</button>
+      <button id="upBtn" class="btn btn-icon" title="上级目录">↑</button>
+    </div>
+    <nav id="crumbs" class="breadcrumbs"></nav>
+    <div class="toolbar-right">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input id="search" placeholder="搜索文件…">
+      </div>
+      <button id="viewList" class="btn btn-icon active" title="列表视图">☰</button>
+      <button id="viewGrid" class="btn btn-icon" title="网格视图">▦</button>
+      <button id="toggleSidebar" class="btn btn-icon" title="切换侧边栏">◧</button>
+      <button id="togglePreview" class="btn btn-icon active" title="切换预览">◨</button>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <!-- Sidebar: folder tree -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-title">目录</div>
+      <div id="tree" class="tree"></div>
+    </aside>
+
+    <!-- File list -->
+    <div class="file-area">
+      <div id="fileList" class="file-list list-view hidden"></div>
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">⏳</div>
+        <div class="empty-text">正在加载云端清单…</div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <aside id="preview" class="preview-panel">
+      <div class="preview-header">
+        <span>预览</span>
+        <button id="closePreview" class="btn btn-icon" title="关闭">✕</button>
+      </div>
+      <div id="previewBody" class="preview-body">
+        <div class="preview-empty">
+          <div class="empty-icon">👁</div>
+          <div>选择文件进行预览</div>
+        </div>
+      </div>
+      <div class="preview-footer">
+        <button id="downloadOne" class="btn btn-primary" disabled>下载此文件</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-left">
+      <span id="status">正在读取云端清单…</span>
+      <div id="progressWrap" class="progress-wrap hidden"><div id="progressBar" class="progress-bar"></div></div>
+    </div>
+    <div class="footer-right">
+      <button id="downloadFolder" class="btn">下载当前文件夹</button>
+      <button id="downloadSelected" class="btn btn-primary" disabled>下载选中 (0)</button>
+    </div>
+  </footer>
+</div>
+
+<!-- Token dialog -->
+<dialog id="tokenDialog">
+  <form method="dialog">
+    <h3>私有仓库访问</h3>
+    <p>令牌只保存在当前页面内，刷新后清除。</p>
+    <input id="tokenInput" type="password" placeholder="Fine-grained token">
+    <menu>
+      <button value="cancel">取消</button>
+      <button id="saveToken" value="default">使用令牌</button>
+    </menu>
+  </form>
+</dialog>
+
+<script>window.addEventListener('error',e=>{const el=document.getElementById('status');if(el)el.textContent='页面脚本错误：'+(e.error?.message||e.message)});window.addEventListener('unhandledrejection',e=>{const el=document.getElementById('status');if(el)el.textContent='页面请求错误：'+(e.reason?.message||e.reason)});</script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script type="module" src="app.js"></script>
+</body>
+</html>
