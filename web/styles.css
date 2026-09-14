@@ -385,6 +385,7 @@ body.resizing .file-area { transition: none; }
   cursor: pointer;
   opacity: 0;
   transition: opacity .12s;
+  z-index: 2;
 }
 .file-card:hover .card-checkbox,
 .file-card.selected .card-checkbox { opacity: 1; }
