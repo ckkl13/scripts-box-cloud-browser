@@ -308,6 +308,17 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
   gap: 10px;
 }
+.grid-toolbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.grid-toolbar .checkbox { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
+.grid-toolbar-label { user-select: none; cursor: pointer; }
 .file-card {
   background: var(--surface);
   border: 1px solid var(--border);

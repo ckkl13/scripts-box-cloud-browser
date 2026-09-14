@@ -3,8 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Scripts Box 资源浏览器</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20260914">
 </head>
 <body>
 <div class="app">
@@ -106,6 +109,6 @@
 </dialog>
 
 <script>window.addEventListener('error',e=>{const el=document.getElementById('status');if(el)el.textContent='页面脚本错误：'+(e.error?.message||e.message)});window.addEventListener('unhandledrejection',e=>{const el=document.getElementById('status');if(el)el.textContent='页面请求错误：'+(e.reason?.message||e.reason)});</script>
-<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script type="module" src="app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script type="module" src="app.js?v=20260914"></script>
 </body>
 </html>

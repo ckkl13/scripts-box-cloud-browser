@@ -1,4 +1,4 @@
-import { setToken, readManifest, fetchFile } from './github.js';
+import { setToken, readManifest, fetchFile } from './github.js?v=20260914';
 
 const $ = id => document.getElementById(id);
 
@@ -109,6 +109,25 @@ function getFolderCheckState(path) {
   const selCount = all.filter(f => selected.has(f.path)).length;
   if (selCount === 0) return { checked: false, indeterminate: false };
   if (selCount === all.length) return { checked: true, indeterminate: false };
+  return { checked: false, indeterminate: true };
+}
+
+// Returns { checked, indeterminate } for the "select all" control over a list of items
+function getSelectAllState(items) {
+  if (items.length === 0) return { checked: false, indeterminate: false };
+  let selCount = 0;
+  let partial = false;
+  for (const item of items) {
+    if (item.isFolder) {
+      const st = getFolderCheckState(item.path);
+      if (st.checked) selCount++;
+      else if (st.indeterminate) partial = true;
+    } else {
+      if (selected.has(item.path)) selCount++;
+    }
+  }
+  if (selCount === 0 && !partial) return { checked: false, indeterminate: false };
+  if (selCount === items.length && !partial) return { checked: true, indeterminate: false };
   return { checked: false, indeterminate: true };
 }
 
@@ -237,7 +256,41 @@ function renderFileList() {
   if (viewMode === 'list') {
     const header = document.createElement('div');
     header.className = 'list-header';
-    header.innerHTML = '<span></span><span></span><span>名称</span><span>大小</span><span>类型</span><span>存储</span>';
+
+    // select-all checkbox
+    const allCb = document.createElement('input');
+    allCb.type = 'checkbox';
+    allCb.className = 'checkbox select-all';
+    const allState = getSelectAllState(items);
+    allCb.checked = allState.checked;
+    allCb.indeterminate = allState.indeterminate;
+    allCb.onchange = () => {
+      if (allCb.checked) {
+        for (const item of items) {
+          if (item.isFolder) getFilesRecursive(item.path).forEach(f => selected.add(f.path));
+          else selected.add(item.path);
+        }
+      } else {
+        for (const item of items) {
+          if (item.isFolder) getFilesRecursive(item.path).forEach(f => selected.delete(f.path));
+          else selected.delete(item.path);
+        }
+      }
+      updateSelectionUI();
+      renderFileList();
+    };
+
+    const hIcon = document.createElement('span');
+    const hName = document.createElement('span'); hName.textContent = '名称';
+    const hSize = document.createElement('span'); hSize.textContent = '大小';
+    const hType = document.createElement('span'); hType.textContent = '类型';
+    const hStorage = document.createElement('span'); hStorage.textContent = '存储';
+    header.appendChild(allCb);
+    header.appendChild(hIcon);
+    header.appendChild(hName);
+    header.appendChild(hSize);
+    header.appendChild(hType);
+    header.appendChild(hStorage);
     list.appendChild(header);
 
     for (const item of items) {
@@ -317,7 +370,38 @@ function renderFileList() {
       list.appendChild(row);
     }
   } else {
-    // grid view
+    // grid view — add a select-all bar above the cards
+    const bar = document.createElement('div');
+    bar.className = 'grid-toolbar';
+    const allCb = document.createElement('input');
+    allCb.type = 'checkbox';
+    allCb.className = 'checkbox';
+    const allState = getSelectAllState(items);
+    allCb.checked = allState.checked;
+    allCb.indeterminate = allState.indeterminate;
+    allCb.onchange = () => {
+      if (allCb.checked) {
+        for (const item of items) {
+          if (item.isFolder) getFilesRecursive(item.path).forEach(f => selected.add(f.path));
+          else selected.add(item.path);
+        }
+      } else {
+        for (const item of items) {
+          if (item.isFolder) getFilesRecursive(item.path).forEach(f => selected.delete(f.path));
+          else selected.delete(item.path);
+        }
+      }
+      updateSelectionUI();
+      renderFileList();
+    };
+    const label = document.createElement('span');
+    label.className = 'grid-toolbar-label';
+    label.textContent = '全选';
+    label.onclick = () => allCb.click();
+    bar.appendChild(allCb);
+    bar.appendChild(label);
+    list.appendChild(bar);
+
     for (const item of items) {
       const card = document.createElement('div');
       card.className = 'file-card';

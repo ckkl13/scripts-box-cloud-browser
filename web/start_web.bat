@@ -33,8 +33,8 @@ echo Close this window to stop the server.
 echo ============================================
 echo.
 
-start "" powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Milliseconds 800; Start-Process 'http://127.0.0.1:8765/'"
+start "" powershell -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Milliseconds 800; Start-Process 'http://127.0.0.1:8765/?v=%RANDOM%'"
 
-"%PYTHON%" -m http.server 8765 --bind 127.0.0.1
+"%PYTHON%" server.py 8765
 
 pause
