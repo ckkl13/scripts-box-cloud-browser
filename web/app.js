@@ -528,27 +528,50 @@ function download(url, name) {
 }
 
 async function downloadRecord(f) {
-  $('status').textContent = `正在下载 ${f.path.split('/').pop()}…`;
+  const fname = f.path.split('/').pop();
+  $('status').textContent = `正在下载 ${fname}…`;
+  $('progressWrap').classList.remove('hidden');
+  $('progressBar').classList.add('indeterminate');
   try {
-    download(URL.createObjectURL(await (await fetchFile(f)).blob()), f.path.split('/').pop());
-    $('status').textContent = `已开始下载 ${f.path.split('/').pop()}`;
+    const blob = await (await fetchFile(f)).blob();
+    $('progressBar').classList.remove('indeterminate');
+    $('progressBar').style.width = '100%';
+    download(URL.createObjectURL(blob), fname);
+    $('status').textContent = `已开始下载 ${fname}`;
+    setTimeout(() => $('progressWrap').classList.add('hidden'), 800);
   } catch (e) {
     $('status').textContent = '下载失败：' + e.message;
+    $('progressWrap').classList.add('hidden');
   }
 }
 
 async function zipFiles(chosen, name) {
   if (!window.JSZip) { $('status').textContent = 'ZIP 组件加载失败'; return; }
   const z = new JSZip();
-  $('status').textContent = `正在打包 ${chosen.length} 个文件…`;
-  for (const f of chosen) {
+  const total = chosen.length;
+  $('progressWrap').classList.remove('hidden');
+  $('progressBar').classList.remove('indeterminate');
+
+  // Phase 1: fetch files (progress by file count)
+  for (let i = 0; i < total; i++) {
+    const f = chosen[i];
+    $('status').textContent = `正在打包 ${i + 1}/${total}：${f.path.split('/').pop()}`;
+    $('progressBar').style.width = Math.round(((i + 1) / total) * 100) + '%';
     const blob = await (await fetchFile(f)).blob();
-    // use path relative to root for cleaner zip structure
     const rel = f.path.startsWith(ROOT_NAME + '/') ? f.path.slice(ROOT_NAME.length + 1) : f.path;
     z.file(rel, blob);
   }
-  download(URL.createObjectURL(await z.generateAsync({ type: 'blob' })), name);
+
+  // Phase 2: compress blob with JSZip onUpdate callback
+  $('status').textContent = `正在压缩 ${name}…`;
+  const blob = await z.generateAsync({ type: 'blob' }, (meta) => {
+    $('progressBar').style.width = meta.percent.toFixed(1) + '%';
+    $('status').textContent = `正在压缩 ${name}… ${meta.percent.toFixed(0)}%`;
+  });
+  download(URL.createObjectURL(blob), name);
+  $('progressBar').style.width = '100%';
   $('status').textContent = `已生成 ${name}`;
+  setTimeout(() => $('progressWrap').classList.add('hidden'), 1000);
 }
 
 async function downloadSelected() {
