@@ -390,7 +390,9 @@ body.resizing .file-area { transition: none; }
   z-index: 2;
 }
 .file-card:hover .card-checkbox,
-.file-card.selected .card-checkbox { opacity: 1; }
+.file-card.selected .card-checkbox,
+.file-card .card-checkbox:checked,
+.file-card .card-checkbox:indeterminate { opacity: 1; }
 .file-card .card-icon {
   font-size: 38px;
   line-height: 1;
